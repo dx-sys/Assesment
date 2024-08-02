@@ -1,0 +1,46 @@
+import tkinter
+from tkinter import ttk
+#define the colours
+dark_blue = "#00008B"
+orange = "#FFA500"
+
+# Function to handle each button click
+def hire():
+    print("Hire button clicked")
+
+def return_item():
+    print("Return button clicked")
+
+def go_back():
+    print("Go Back button clicked")
+
+def quit_app():
+    window.quit()
+
+# Main window setup
+window = tkinter.Tk()
+window.title("Julie's Party Hire")
+
+# Title label
+title_label = tkinter.Label(window, text="Julie's Party Hire", font=("Comic Sans", 16))
+title_label.pack(pady=10)
+
+# Frame for buttons
+button_frame = tkinter.Frame(window)
+button_frame.pack(pady=20)
+
+# Buttons
+hire_button = ttk.Button(button_frame, text="Hire", command=hire)
+hire_button.grid(row=0, column=1, padx=10, pady=10)
+
+return_button = ttk.Button(button_frame, text="Return", command=return_item)
+return_button.grid(row=1, column=1, padx=10, pady=10)
+
+go_back_button = ttk.Button(button_frame, text="View recipts", command=go_back)
+go_back_button.grid(row=2, column=1, padx=10, pady=10)
+
+quit_button = ttk.Button(button_frame, text="Quit", command=quit_app)
+quit_button.grid(row=3, column=1, padx=10, pady=10)
+
+# Run the application
+window.mainloop()
