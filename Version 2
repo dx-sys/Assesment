@@ -1,0 +1,93 @@
+import tkinter
+from tkinter import ttk
+
+# Hire window
+def hire():
+    hire_window = tkinter.Toplevel(window)
+    hire_window.title("Julie's Party Hire")
+
+    # Title label - hire
+    hire_title_label = tkinter.Label(hire_window, text="Julie's Party Hire - Hire",)
+    hire_title_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+    # Full Name entry
+    tkinter.Label(hire_window, text="Full Name").grid(column=0, row=1, sticky=tkinter.E)
+    costumer_name = tkinter.Entry(hire_window)
+    costumer_name.grid(column=1, row=1)
+
+    # Item Name entry
+    tkinter.Label(hire_window, text="Item Name").grid(column=0, row=3, sticky=tkinter.E)
+    item_name = ttk.Combobox(hire_window, values=["Chair","Balloon","Candle","Tables","Confettis","Garland", "Party Hats"])
+    item_name.grid(column=1, row=3)
+
+    # Number of Items combobox
+    tkinter.Label(hire_window, text="Number Of Items").grid(column=0, row=4, sticky=tkinter.E)
+    number_of_items = tkinter.Spinbox(hire_window, values=[str(i) for i in range(1,500)])
+    number_of_items.grid(column=1, row=4)
+
+    # Buttons
+    hire_item_button = ttk.Button(hire_window, text="Hire Item")
+    hire_item_button.grid(column=0, row=5, padx=10, pady=10)
+
+    go_back_button = ttk.Button(hire_window, text="Go Back", command=hire_window.destroy)
+    go_back_button.grid(column=1, row=5, padx=10, pady=10)
+# Return window
+def return_item():
+    return_window = tkinter.Toplevel(window)
+    return_window.title("Julies Party Hire")
+
+    #Title label - return
+    return_title_label = ttk.Label(return_window, text="Julie's Party Hire - Returns")
+    return_title_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+    tkinter.Label(return_window, text="Full Name").grid(column=0, row=1, sticky=tkinter.E)
+    costumer_name = tkinter.Entry(return_window)
+    costumer_name.grid(column=1, row=1)
+
+    tkinter.Label(return_window, text="Item Name").grid(column=0, row=3, sticky=tkinter.E)
+    item_name = ttk.Combobox(return_window, values=["Chair","Balloon","Candle","Tables","Confettis","Garland", "Party Hats"])
+    item_name.grid(column=1, row=3)
+
+    tkinter.Label(return_window, text="Number Of Items").grid(column=0, row=4, sticky=tkinter.E)
+    number_of_items = tkinter.Spinbox(return_window, values=[str(i) for i in range(1,500)])
+    #buttons for return
+    return_item_button = ttk.Button(return_window, text="Return Item")
+    return_item_button.grid(column=0, row=5, padx=10, pady=10)
+
+    go_back_button = ttk.Button(return_window, text="Go Back", command=return_window.destroy)
+    go_back_button.grid(column=1, row=5, padx=10, pady=10)
+    number_of_items.grid(column=1, row=4)
+
+def View_recipts():
+    print("View Recipts button clicked")
+
+def quit_app():
+    window.quit()
+
+# Main window setup
+window = tkinter.Tk()
+window.title("Julie's Party Hire")
+
+# Title label
+title_label = tkinter.Label(window, text="Julie's Party Hire", font=("Comic Sans", 16))
+title_label.pack(pady=10)
+
+# Frame for buttons
+button_frame = tkinter.Frame(window)
+button_frame.pack(pady=20)
+
+# Buttons
+hire_button = ttk.Button(button_frame, text="Hire", command=hire)
+hire_button.grid(row=0, column=1, padx=10, pady=10)
+
+return_button = ttk.Button(button_frame, text="Return", command=return_item)
+return_button.grid(row=1, column=1, padx=10, pady=10)
+
+go_back_button = ttk.Button(button_frame, text="View Recipts", command=View_recipts)
+go_back_button.grid(row=2, column=1, padx=10, pady=10)
+
+quit_button = ttk.Button(button_frame, text="Quit", command=quit_app)
+quit_button.grid(row=3, column=1, padx=10, pady=10)
+
+# Run the application
+window.mainloop()
