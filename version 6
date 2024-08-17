@@ -1,0 +1,276 @@
+import random
+import tkinter 
+from tkinter import ttk
+from tkinter import messagebox
+#define font
+custom_font = ("Comic Sans MS","16")
+button_width = 12
+#define colours
+dark_blue = "#00008B"
+orange = "#FF8C00"
+white = "#F5F5F5"
+#list ot store tne user entires
+assessment = []
+
+def load_existing_receipts():
+    try:
+        with open("assesment.txt", "r") as file:
+            for line in file:
+                costumer_name, item_name, number_of_items, receipt_code = line.strip().split(",")
+                receipt_details = {
+                    "costumer_name": costumer_name,
+                    "item_name": item_name,
+                    "number_of_items": number_of_items,
+                    "receipt_code": receipt_code
+                }
+                assessment.append(receipt_details)
+    except FileNotFoundError:
+        # File does not exist, meaning no receipts have been saved yet
+        pass
+
+load_existing_receipts()
+
+# Hire window
+def hire_item():
+    hire_window = tkinter.Toplevel(window)
+    hire_window.title("Julie's Party Hire")
+    hire_window.configure(bg=dark_blue)
+
+    # Title label - hire
+    hire_title_label = tkinter.Label(hire_window, text="Julie's Party Hire - Hire", bg=dark_blue, fg=white , font = custom_font)
+    hire_title_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+    # Full Name entry
+    tkinter.Label(hire_window, text="First Name", bg=dark_blue, fg=white).grid(column=0, row=1, sticky=tkinter.E)
+    costumer_name = tkinter.Entry(hire_window)
+    costumer_name.grid(column=1, row=1)
+
+    # Item Name entry
+    tkinter.Label(hire_window, text="Item Name", bg=dark_blue, fg=white).grid(column=0, row=3, sticky=tkinter.E)
+    item_name = ttk.Combobox(hire_window, values=["Chair","Balloon","Candle","Tables","Confettis","Garland", "Party Hats"])
+    item_name.grid(column=1, row=3)
+
+    # Number of Items combobox
+    tkinter.Label(hire_window, text="Number Of Items", bg=dark_blue, fg=white).grid(column=0, row=4, sticky=tkinter.E)
+    number_of_items = tkinter.Spinbox(hire_window, values=[str(i) for i in range(1,500)])
+    number_of_items.grid(column=1, row=4)
+
+    # Buttons
+    hire_item_button = tkinter.Button(hire_window, text="Hire Item", bg=orange, fg=white, width=button_width, font=15, command=lambda: generate_receipt(costumer_name.get(), item_name.get(), number_of_items.get(), hire_window,))
+    hire_item_button.grid(column=0, row=5, padx=10, pady=10)
+
+    go_back_button = tkinter.Button(hire_window, text="Go Back", command=hire_window.destroy, bg=orange, fg=white, width=button_width, font=15)
+    go_back_button.grid(column=1, row=5, padx=10, pady=10)
+# Function to check the length
+def check_length(costumer_name):
+    return len(costumer_name)<= 20
+
+# Function to check if the input contains only alphabets
+def check_text(costumer_name):
+    return costumer_name.isalpha()
+
+# Function to validate the input
+def validate_input():
+    costumer_name = entry.get()
+#Recipt code
+def generate_receipt_code():
+    letter = random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
+    digits = random.randint(100,999)
+    return f"{letter}{digits}"
+def generate_receipt(costumer_name, item_name,number_of_items, hire_item):
+#Validation checks
+    if not costumer_name or not item_name or not number_of_items:
+        tkinter.messagebox.showwarning("Warning", "Please enter: Full Name, Item Name and Quantity.")
+        return
+
+    elif not check_length(costumer_name):
+       messagebox.showerror("Input Error", "Full name must be at most 20 characters long.")
+       return
+
+    elif not check_text(costumer_name):
+       messagebox.showerror("Input Error", "Full name must contain only alphabets.")
+       return
+    elif not number_of_items.isdigit() or int(number_of_items) < 1:
+        messagebox.showerror("Input Error", "Number of items must be a positive integer and whole number.")
+        return
+    elif not item_name in ["Chair", "Balloon", "Candle", "Tables", "Confettis", "Garland", "Party Hats"]:
+        messagebox.showerror("Input Error", "Item must be the products listed.")
+        return
+    elif int(number_of_items) > 500:
+        messagebox.showerror("Input Error", "Number of items must not exceed 500.")
+        return
+    receipt_code = generate_receipt_code()
+#save data in text file
+    receipt_details = {
+        "costumer_name": costumer_name,
+        "item_name": item_name,
+        "number_of_items": number_of_items,
+        "receipt_code": receipt_code
+    }
+    assessment.append(receipt_details)
+    
+    with open("assesment.txt", "a") as file:
+        file.write(f"{costumer_name},{item_name},{number_of_items},{receipt_code}\n")
+        
+    hire_item.destroy()
+    
+    receipt_window = tkinter.Toplevel(window)
+    receipt_window.title("Julies party Hire")
+    receipt_window.configure(bg=dark_blue)
+    
+    receipt_label = tkinter.Label(receipt_window, text=f"Receipt for {costumer_name}", fg=white, bg=dark_blue)
+    receipt_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+    tkinter.Label(receipt_window, text="Item:", fg=white, bg=dark_blue).grid(row=1, column=0, sticky=tkinter.E)
+    tkinter.Label(receipt_window, text=item_name, fg=white, bg=dark_blue).grid(row=1, column=1, sticky=tkinter.W)
+
+    tkinter.Label(receipt_window, text="Quantity:", fg=white, bg=dark_blue).grid(row=2, column=0, sticky=tkinter.E)
+    tkinter.Label(receipt_window, text=number_of_items, fg=white, bg=dark_blue).grid(row=2, column=1, sticky=tkinter.W)
+
+    tkinter.Label(receipt_window, text="Receipt Code:", fg=white, bg=dark_blue).grid(row=3, column=0, sticky=tkinter.E)
+    tkinter.Label(receipt_window, text=receipt_code, fg=white, bg=dark_blue).grid(row=3, column=1, sticky=tkinter.W)
+
+    close_button = tkinter.Button(receipt_window, text="Close", command=receipt_window.destroy, bg=orange, fg=white, width=button_width, font=15)
+    close_button.grid(row=4, column=0, columnspan=2, pady=10)
+    
+
+def return_item():
+    def validate_return():
+        customer_name_input = costumer_name.get()
+        item_name_input = item_name.get()
+        number_of_items_input = number_of_items.get()
+        receipt_code_input = receipt_code.get()
+
+        # Validation checks
+        if not customer_name_input or not item_name_input or not number_of_items_input or not receipt_code_input:
+            messagebox.showwarning("Warning", "Please fill in all fields.")
+            return
+        elif not check_length(customer_name_input):
+            messagebox.showerror("Input Error", "Full name must be at most 20 characters long.")
+            return
+        elif not check_text(customer_name_input):
+            messagebox.showerror("Input Error", "Full name must contain only alphabets.")
+            return
+        elif not number_of_items_input.isdigit() or int(number_of_items_input) < 1:
+            messagebox.showerror("Input Error", "Number of items must be a positive integer and whole number.")
+            return
+        elif not item_name_input in ["Chair", "Balloon", "Candle", "Tables", "Confettis", "Garland", "Party Hats"]:
+            messagebox.showerror("Input Error", "Item must be one of the listed products.")
+            return
+        elif len(receipt_code_input) > 5:
+            messagebox.showerror("Input Error", "Receipt code must be at most 5 characters long.")
+            return
+        elif int(number_of_items_input) > 500:
+            messagebox.showerror("Input Error", "Number of items must not exceed 500.")
+            return
+        else:
+# Check if receipt code exists and matches other details
+            for receipt in assessment:
+                if (receipt["receipt_code"] == receipt_code_input and 
+                    receipt["costumer_name"] == customer_name_input and 
+                    receipt["item_name"] == item_name_input):
+                    
+                    # Remove the receipt from the assessment list
+                    assessment.remove(receipt)
+
+                    # Update the text file to remove the returned receipt
+                    with open("assesment.txt", "w") as file:
+                        for remaining_receipt in assessment:
+                            file.write(f"{remaining_receipt['costumer_name']},{remaining_receipt['item_name']},{remaining_receipt['number_of_items']},{remaining_receipt['receipt_code']}\n")
+
+                    messagebox.showinfo("Success", "Item returned successfully.")
+                    return_window.destroy()
+                    return
+            
+            messagebox.showerror("Error", "Invalid return details(Double check if information is right).")
+            
+    return_window = tkinter.Toplevel(window)
+    return_window.title("Julies Party Hire")
+    return_window.configure(bg=dark_blue)
+
+    #Title label - return
+    return_title_label = tkinter.Label(return_window, text="Julie's Party Hire - Returns", font= custom_font, bg=dark_blue, fg=white)
+    return_title_label.grid(row=0, column=0, columnspan=2, pady=10)
+
+    tkinter.Label(return_window, text="Full Name", bg=dark_blue, fg=white).grid(column=0, row=1, sticky=tkinter.E)
+    costumer_name = tkinter.Entry(return_window)
+    costumer_name.grid(column=1, row=1)
+
+    tkinter.Label(return_window, text="Item Name", bg=dark_blue, fg=white).grid(column=0, row=3, sticky=tkinter.E)
+    item_name = ttk.Combobox(return_window, values=["Chair","Balloon","Candle","Tables","Confettis","Garland", "Party Hats"])
+    item_name.grid(column=1, row=3)
+
+    tkinter.Label(return_window, text="Number Of Items", bg=dark_blue, fg=white).grid(column=0, row=4, sticky=tkinter.E)
+    number_of_items = tkinter.Spinbox(return_window, values=[str(i) for i in range(1,500)])
+    number_of_items.grid(column=1, row=4)
+    
+    tkinter.Label(return_window, text="Receipt code", bg=dark_blue, fg=white).grid(column=0, row=5, sticky=tkinter.E)
+    receipt_code = tkinter.Entry(return_window)
+    receipt_code.grid(column=1, row=5)
+    #buttons for return
+    return_item_button = tkinter.Button(return_window, text="Return Item", command=validate_return, bg=orange, fg=white, width=button_width, font=15)
+    return_item_button.grid(column=0, row=6, padx=10, pady=10)
+
+    go_back_button = tkinter.Button(return_window, text="Go Back", command=return_window.destroy, bg=orange, fg=white, width=button_width, font=15)
+    go_back_button.grid(column=1, row=6, padx=10, pady=10)
+
+    
+
+def View_recipts():
+    # Create a new window to display the receipts
+    view_recipts_window = tkinter.Toplevel(window)
+    view_recipts_window.title("Julie's Party Hire - View Receipts")
+    view_recipts_window.configure(bg=dark_blue) 
+
+    # Title label
+    view_recipts_title_label = tkinter.Label(view_recipts_window, text="Julie's Party Hire - Receipts", font= custom_font, bg=dark_blue, fg=white)
+    view_recipts_title_label.grid(row=0, column=0, columnspan=4, pady=10)
+
+    # Table headers
+    tkinter.Label(view_recipts_window, text="Customer Name", font=("Arial", 10, "bold"), bg=dark_blue, fg=white).grid(row=1, column=0, padx=5)
+    tkinter.Label(view_recipts_window, text="Item Name", font=("Arial", 10, "bold"), bg=dark_blue, fg=white).grid(row=1, column=1, padx=5)
+    tkinter.Label(view_recipts_window, text="Quantity", font=("Arial", 10, "bold"), bg=dark_blue, fg=white).grid(row=1, column=2, padx=5)
+    tkinter.Label(view_recipts_window, text="Receipt Code", font=("Arial", 10, "bold"), bg=dark_blue, fg=white).grid(row=1, column=3, padx=5)
+
+    # Populate the table with receipts
+    for idx, receipt in enumerate(assessment):
+        tkinter.Label(view_recipts_window, text=receipt["costumer_name"], bg=dark_blue, fg=white).grid(row=idx + 2, column=0, padx=5)
+        tkinter.Label(view_recipts_window, text=receipt["item_name"], bg=dark_blue, fg=white).grid(row=idx + 2, column=1, padx=5)
+        tkinter.Label(view_recipts_window, text=receipt["number_of_items"], bg=dark_blue, fg=white).grid(row=idx + 2, column=2, padx=5)
+        tkinter.Label(view_recipts_window, text=receipt["receipt_code"], bg=dark_blue, fg=white).grid(row=idx + 2, column=3, padx=5)
+
+    # Add a close button
+    close_button = tkinter.Button(view_recipts_window, text="Close", command=view_recipts_window.destroy, bg=orange, fg=white, width=button_width, font=("Arial", 9, "bold"))
+    close_button.grid(row=len(assessment) + 2, column=0, columnspan=4, pady=10)
+
+def quit_app():
+    window.quit()
+    window.destroy()
+
+# Main window setup
+window = tkinter.Tk()
+window.title("Julie's Party Hire")
+window.configure(bg=dark_blue)
+# Title label
+title_label = tkinter.Label(window, text="Julie's Party Hire", font= custom_font, bg=dark_blue, fg=white)
+title_label.pack(pady=10)
+
+# Frame for buttons
+button_frame = tkinter.Frame(window, bg=dark_blue)
+button_frame.pack(pady=20)
+
+# Buttons
+hire_button = tkinter.Button(button_frame, text="Hire", command=hire_item, bg=orange, fg=white, width=button_width, font=30)
+hire_button.grid(row=0, column=1, padx=10, pady=10)
+
+return_button = tkinter.Button(button_frame, text="Return", command=return_item, bg=orange, fg=white, width=button_width, font=30)
+return_button.grid(row=1, column=1, padx=10, pady=10)
+
+view_receipts_button = tkinter.Button(button_frame, text="View Receipts", command=View_recipts, bg=orange, fg=white, width=button_width, font=30)
+view_receipts_button.grid(row=2, column=1, padx=10, pady=10)
+
+quit_button = tkinter.Button(button_frame, text="Quit", command=quit_app, bg=orange, fg=white, width=button_width, font=30)
+quit_button.grid(row=3, column=1, padx=10, pady=10)
+
+# Run the application
+window.mainloop()
