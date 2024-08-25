@@ -1,6 +1,7 @@
 #Author-Danne Darlin
 #Date-21/08/2024
 #Purpose- Make a program for juilie for her party hire.
+
 import random
 import tkinter 
 from tkinter import ttk
